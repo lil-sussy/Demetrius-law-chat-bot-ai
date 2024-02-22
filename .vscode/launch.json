@@ -1,0 +1,56 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+
+    {
+      "name": "Run Django server",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/manage.py",
+      "args": [
+        "runserver",
+      ],
+      "django": true,
+      "justMyCode": true
+    },
+    {
+      "name": "law import command",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/manage.py",
+      "args": [
+        "import_laws",
+        // "./additional_INFO/data_pdf/DIMITRI/igca/igca.pdf"
+      ],
+      "django": true,
+      "justMyCode": true
+    },
+    {
+      "name": "ask xd command",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/manage.py",
+      "args": [
+        "ask_demetrius",
+        "If a woman gets raped, is it her fault ?"
+      ],
+      "django": true,
+      "justMyCode": true
+    },
+    {
+      "name": "ask demetrius command",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/manage.py",
+      "args": [
+        "ask_demetrius",
+        "Is an attempt a commencement of execution which has NOT been suspended or has SUCCEEDED ?"
+      ],
+      "django": true,
+      "justMyCode": true
+    }
+  ]
+}

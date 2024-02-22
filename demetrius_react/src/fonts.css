@@ -1,0 +1,156 @@
+.lexenddeca-normal-oslo-gray-18px {
+  color: var(--oslo-gray);
+  font-family: var(--font-family-lexend_deca);
+  font-weight: 400;
+  font-size: 18px;
+  font-style: normal;
+}
+.lexenddeca-normal-oslo-gray-24px {
+  color: var(--oslo-gray);
+  font-family: var(--font-family-lexend_deca);
+  font-size: var(--font-size-l3);
+  font-weight: 400;
+  font-style: normal;
+}
+.lexenddeca-normal-geyser-24px {
+  color: var(--geyser);
+  font-family: var(--font-family-lexend_deca);
+  font-size: var(--font-size-l3);
+  font-weight: 400;
+  font-style: normal;
+}
+.lexenddeca-semi-bold-oslo-gray-20px {
+  color: var(--oslo-gray);
+  font-family: var(--font-family-lexend_deca);
+  font-size: var(--font-size-m3);
+  font-weight: 600;
+  font-style: normal;
+}
+
+/* Classes */
+.lexenddeca-normal-black-64px {
+	color: var(--black);
+	font-family: var(--font-family-lexend_deca);
+	font-size: var(--font-size-m2);
+	font-weight: 400;
+	font-style: normal;
+}
+.lexenddeca-normal-white-48px {
+	color: var(--white);
+	font-family: var(--font-family-lexend_deca);
+	font-size: var(--font-size-s2);
+	font-weight: 400;
+	font-style: normal;
+}
+.lexenddeca-medium-white-64px {
+	color: var(--white);
+	font-family: var(--font-family-lexend_deca);
+	font-size: var(--font-size-m2);
+	font-weight: 500;
+	font-style: normal;
+}
+.inter-normal-geyser-24px {
+	color: var(--geyser);
+	font-family: var(--font-family-inter);
+	font-size: var(--font-size-l3);
+	font-weight: 400;
+	font-style: normal;
+}
+.lexenddeca-normal-oslo-gray-24px {
+	color: var(--oslo-gray);
+	font-family: var(--font-family-lexend_deca);
+	font-size: var(--font-size-l3);
+	font-weight: 400;
+	font-style: normal;
+}
+.lexenddeca-medium-white-64px {
+	color: var(--white);
+	font-family: var(--font-family-lexend_deca-medium);
+	font-size: var(--font-size-m2);
+	font-weight: 500;
+	font-style: normal;
+}
+.lexenddeca-semi-bold-oslo-gray-20px {
+	color: var(--oslo-gray);
+	font-family: var(--font-family-lexend_deca);
+	font-size: var(--font-size-m3);
+	font-weight: 600;
+	font-style: normal;
+}
+.lexenddeca-normal-geyser-24px {
+	color: var(--geyser);
+	font-family: var(--font-family-lexend_deca);
+	font-size: var(--font-size-l3);
+	font-weight: 400;
+	font-style: normal;
+}
+.lexenddeca-normal-black-64px {
+	color: var(--black);
+	font-family: var(--font-family-lexend_deca);
+	font-size: var(--font-size-m2);
+	font-weight: 400;
+	font-style: normal;
+}
+.lexenddeca-semi-bold-oslo-gray-20px {
+	color: var(--oslo-gray);
+	font-family: var(--font-family-lexend_deca-semibold);
+	font-size: var(--font-size-m3);
+	font-weight: 600;
+	font-style: normal;
+}
+.lexenddeca-normal-oslo-gray-20px {
+	color: var(--oslo-gray);
+	font-family: var(--font-family-lexend_deca);
+	font-size: var(--font-size-m3);
+	font-weight: 400;
+	font-style: normal;
+}
+.lexenddeca-normal-white-48px {
+	color: var(--white);
+	font-family: var(--font-family-lexend_deca);
+	font-size: var(--font-size-s2);
+	font-weight: 400;
+	font-style: normal;
+}
+.inter-semi-bold-oslo-gray-20px {
+	color: var(--oslo-gray);
+	font-family: var(--font-family-inter);
+	font-size: var(--font-size-m3);
+	font-weight: 600;
+	font-style: normal;
+}
+.lexenddeca-normal-geyser-24px-2 {
+	color: var(--geyser-2);
+	font-family: var(--font-family-lexend_deca);
+	font-size: var(--font-size-l3);
+	font-weight: 400;
+	font-style: normal;
+}
+.lexenddeca-normal-geyser-24px {
+  color: var(--geyser);
+  font-family: var(--font-family-lexend_deca);
+  font-size: var(--font-size-l);
+  font-weight: 400;
+  font-style: normal;
+}
+.lexenddeca-normal-oslo-gray-20px {
+  color: var(--oslo-gray);
+  font-family: var(--font-family-lexend_deca);
+  font-size: var(--font-size-m);
+  font-weight: 400;
+  font-style: normal;
+}
+.lexenddeca-normal-geyser-24px {
+  color: var(--geyser);
+  font-family: var(--font-family-lexend_deca);
+  font-size: var(--font-size-l3);
+  font-weight: 400;
+  font-style: normal;
+}
+.lexenddeca-semi-bold-oslo-gray-20px {
+  color: var(--oslo-gray);
+  font-family: var(--font-family-lexend_deca);
+  font-size: var(--font-size-m3);
+  font-weight: 600;
+  font-style: normal;
+}

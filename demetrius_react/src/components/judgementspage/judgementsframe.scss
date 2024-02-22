@@ -1,0 +1,133 @@
+@use '@carbon/react/scss/themes';
+@use '@carbon/react/scss/theme';
+@use '@carbon/react/scss/components/button/tokens' as button-tokens;
+@use '@carbon/themes/scss/utilities';
+@use '@carbon/react/scss/components/button';
+@use '@carbon/react/scss/components/text-input';
+@import'@carbon/react/scss/themes';
+@import'@carbon/react/scss/theme';
+
+.toleft {
+  transform: translateX(-100%);
+}
+.unmoved {
+  transform: translateX(0px);
+}
+.toright {
+  transform: translateX(100%);
+}
+.tobottom {
+  transform: translateY(100%);
+}
+.main-container {
+  display: flex;
+  transform: translateX(0px);
+  transition: transform 0.3s ease-in-out;
+  flex-direction: row;
+  align-items: start;
+  justify-content: start;
+  width: 100%;
+  height: 100%;
+  background-color: $background;
+}
+.left-container {
+  width: fit-content;
+}
+.judgment-panel {
+  width: 0;
+}
+.judgment-panel-background.blur  {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.view-selection-frame {
+  align-items: center;
+  background-color: var(--eerie-black);
+  border: 1px none;
+  display: flex;
+  flex-direction: column;
+  gap: 21px;
+  padding: 25px;
+  position: relative;
+  width: fit-content;
+  height: 100%;
+  overflow: scroll;
+}
+.edit-frame-background {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(5px);
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 100;
+}
+.edit-frame {
+  align-items: center;
+  background-color: $layer-01;
+  box-sizing: border-box;
+  position: absolute;
+  top: 0;
+  right: 0;
+  border: 1px none;
+  display: flex;
+  flex-direction: column;
+  gap: 31px;
+  padding: 30px 0;
+  width: 738px;
+  height: 100%;
+  overflow-y: scroll;
+  transition: transform 0.4s ease-in-out;
+  filter: drop-shadow(0px 0px 10px rgba(0, 0, 0, 0.25));
+}
+.table-frame {
+  position: relative;
+  align-items: flex-start;
+  background-color: $background;
+  border: 1px none;
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+  justify-content: center;
+  padding: 25px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.relative {
+  transition: position 0.4s ease-in-out;
+  transition: background 0.4s ease-in-out;
+}
+
+.relative.blur {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(5px);
+  background-color: rgba(100, 100, 100, 0.5);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.4s ease-in-out;
+}
+.relative :has(> div.unmoved) {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(5px);
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}

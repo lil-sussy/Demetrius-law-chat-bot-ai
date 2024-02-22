@@ -1,0 +1,79 @@
+@use '@carbon/react/scss/themes';
+@use '@carbon/react/scss/theme';
+@use '@carbon/react/scss/components/button/tokens' as button-tokens;
+@use '@carbon/themes/scss/utilities';
+@use '@carbon/react/scss/components/button';
+@use '@carbon/react/scss/components/text-input';
+@import'@carbon/react/scss/themes';
+@import'@carbon/react/scss/theme';
+
+.popup-buttons-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10%;
+  width: 45rem;
+  height: 15rem;
+}
+.popup-buttons-container.show-add-files {
+   width: 55rem;
+  height: 25rem;
+  
+}
+
+.file-input-container {
+  overflow-y: scroll;
+  height: 20rem;
+  text-align: start;
+}
+
+.confirmation-buttons-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 20%;
+  width: 100%;
+}
+
+.popup-background {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.4s ease-in-out;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  min-width: 100vw;
+  z-index: 100;
+  height: 100vh;
+  background-color: rgba(100, 100, 100, 0.5);
+  backdrop-filter: blur(5px);
+}
+.confirmation-popup {
+  z-index: 110;
+  position: absolute;
+  padding: 3%;
+  background-color: $layer-01;
+  border-radius: 4px;
+  display: flex;
+  gap: 5%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  .popup-title {
+    margin-bottom: 10%;
+  }
+  .popup-button-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 5%;
+    width: 100%;
+  }
+}

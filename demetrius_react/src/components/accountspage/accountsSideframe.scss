@@ -1,0 +1,94 @@
+@use '@carbon/react/scss/themes';
+@use '@carbon/react/scss/theme';
+@use '@carbon/react/scss/components/button/tokens' as button-tokens;
+@use '@carbon/themes/scss/utilities';
+@use '@carbon/react/scss/components/button';
+@use '@carbon/react/scss/components/text-input';
+@use '@carbon/react/scss/components/checkbox';
+@use '@carbon/react/scss/components/fluid-text-input';
+@use '@carbon/react/scss/components/search';
+@use '@carbon/react/scss/components/fluid-search';
+@use '@carbon/react/scss/components/contained-list';
+@use '@carbon/react/scss/components/inline-loading';
+@use '@carbon/react/scss/components/data-table';
+@use '@carbon/react/scss/components/menu';
+@use '@carbon/react/scss/components/select';
+
+@use '@carbon/react/scss/components/treeview' ;
+@import '@carbon/react/scss/theme';
+@import '@carbon/react/scss/components/button';
+@import '@carbon/themes/scss/utilities';
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  width: 100%;
+
+}
+
+.frame-input-field {
+  width: 100%;
+}
+
+.edit-frame-container {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+.shown {
+  display: flex;
+}
+.hidden {
+  display: none;
+}
+.frame {
+  align-items: flex-start;
+  display: flex;
+  position: relative;
+}
+.buttons-container {
+  gap: 1rem;
+  margin-right: 6.53px;
+  min-width: 671px;
+  justify-content: space-between;
+}
+.flex-col {
+  flex-direction: column;
+  gap: 2rem;
+  width: 100%;
+}
+.flex {
+  align-items: flex-start;
+  display: flex;
+}
+.save-button {
+  align-items: flex-start;
+  display: flex;
+  gap: 8px;
+  position: relative;
+  width: fit-content;
+}
+.title {
+  font-size: var(--font-size-s);
+  font-weight: 400;
+  text-align: start;
+  height: 60px;
+  width: 100%;
+  margin: 0;
+  letter-spacing: 0;
+  line-height: normal;
+  min-width: 263px;
+}
+.succes-message {
+  color: $button-primary;
+  font-size: 1.3rem;
+  font-weight: 400;
+  text-align: start;
+  height: 1.3rem;
+  width: 100%;
+  margin: 0;
+  letter-spacing: 0;
+  line-height: normal;
+  min-width: 263px;
+}

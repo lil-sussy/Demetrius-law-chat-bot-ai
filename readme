@@ -1,0 +1,11 @@
+# Demetrius
+
+## Installation
+Run poetry install
+if you encounter any error, create a new poetry venv and run in this order :
+poetry add langchain[all]
+poetry add unstructured
+poetry add pdf2image
+poetry add chromadb
+
+Note : there is a dependency conflict between chromadb and langchain, to solve it make sure that chromadb is installed after.

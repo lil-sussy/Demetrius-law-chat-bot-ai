@@ -1,0 +1,160 @@
+@use '@carbon/react/scss/themes';
+@use '@carbon/react/scss/theme';
+@use '@carbon/react/scss/components/button/tokens' as button-tokens;
+@use '@carbon/themes/scss/utilities';
+@use '@carbon/react/scss/components/button';
+@use '@carbon/react/scss/components/text-input';
+@use '@carbon/react/scss/components/search';
+@use '@carbon/react/scss/components/fluid-search';
+@use '@carbon/react/scss/components/checkbox';
+@import '@carbon/react/scss/theme';
+@import '@carbon/react/scss/components/button';
+@import '@carbon/themes/scss/utilities';
+
+.table-container-wrapper section {
+  height: 6rem;
+  width: 100%;
+}
+.judgments-table-decorator {
+  padding: 1rem;
+}
+.judgments-table-toolbar {
+  width: 100%;
+  display: flex;
+  height: 6rem;
+  gap: 0.1rem;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  .filter-checkbox {
+    margin-left: 0.5rem;
+  }
+  .filter-checkbox .filter-selected {
+    border: 1px solid;
+    border-color: $support-success;
+    color: $support-success;
+  }
+  .filter-selection-list {
+    display: inline-block;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+  }
+}
+
+.judgments-table-scrollcontainer {
+  width: auto!important;
+  height: 40rem;
+  max-height: 40rem;
+  overflow: scroll;
+  // cursor: col-resize;
+  .judgments-table-header {
+    position: sticky;
+    tr {
+      position: sticky;
+      th {
+        position: sticky;
+      }
+    }
+  }
+  .judgment-row-ref-container {
+    height: 100%;
+    .judgment-row-ref {
+      margin: 0;
+      padding-top: 1rem;
+      padding-bottom: 1rem;
+      height: 30%;
+      font-weight: 900;
+      font-size: 1.5rem;
+      box-sizing: border-box;
+      color: #fff;
+    }
+    .row-name-container {
+      align-content: center;
+      display: flex;
+      
+      align-items: center;
+      height: 70%;
+      box-sizing: border-box;
+      padding-bottom: 1rem;
+    }
+    .judgment-row-name {
+      margin: 0;
+      font-weight: 500;
+    }
+  }
+  .judgments-table-xd {
+    table-layout: fixed;
+    // resize: both;
+    .summary-scroll {
+      overflow: scroll;
+      height: 12rem;
+    }
+    .reference-name-col {
+      width: 18rem;
+      height: 10rem;
+    }
+    .summary-col {
+      width: 68rem;
+      height: 10rem;
+    }
+    .selected-col {
+      width: 10rem;
+      height: 10rem;
+    }
+    .col {
+      width: 6rem;
+      height: 10rem;
+    }
+    .summary-td {
+      height: 10rem;
+      padding-top: 0.8rem;
+      padding-bottom: 0.8rem;
+      max-height: 10rem;
+      overflow: scroll;
+    }
+    tr {
+      max-height: 10rem;
+    }
+    td {
+      max-height: 10rem;
+      height: 10rem;
+    }
+  }
+}
+
+.table-container-wrapper {
+  background-color: $layer-01;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  padding: 2rem;
+  padding-top: 0.5rem;
+}
+.table-buttons-container {
+  box-sizing: border-box;
+  width: 100%;
+  margin-bottom: 2rem;
+  margin-top: 0.5rem;
+  align-items: center;
+  align-self: stretch;
+  display: flex;
+  gap: 37px;
+  padding: 0.5rem;
+  position: relative;
+  background-color: $layer-01;
+}
+.frame-31 {
+  align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  justify-content: center;
+  position: relative;
+    width: 100%;
+}
+.table-title {
+  width: 100%;
+  padding-left: 1rem;
+  text-align: start;
+}

@@ -1,0 +1,257 @@
+@use '@carbon/react/scss/themes';
+@use '@carbon/react/scss/theme';
+@use '@carbon/react/scss/components/button/tokens' as button-tokens;
+@use '@carbon/themes/scss/utilities';
+@use '@carbon/react/scss/components/button';
+@use '@carbon/react/scss/components/text-input';
+@use '@carbon/react/scss/components/checkbox';
+@use '@carbon/react/scss/components/fluid-text-input';
+@use '@carbon/react/scss/components/search';
+@use '@carbon/react/scss/components/fluid-search';
+@use '@carbon/react/scss/components/contained-list';
+@use '@carbon/react/scss/components/inline-loading';
+@use '@carbon/react/scss/components/data-table';
+@use '@carbon/react/scss/components/menu';
+@use '@carbon/react/scss/components/select';
+@use '@carbon/react/scss/components/treeview' ;
+@use '@carbon/react/scss/components/file-uploader' ;
+@use '@carbon/react/scss/components/link' ;
+@use '@carbon/react/scss/components/tag' ;
+@import '@carbon/react/scss/theme';
+
+
+:root {
+  @include theme.theme(themes.$g100);
+}
+
+.g10 {
+  @include theme.theme(themes.$g10);
+}
+
+.g90 {
+  @include theme.theme(themes.$g90);
+}
+
+.g100 {
+  @include theme.theme(themes.$g100);
+}
+
+div.cds--skeleton.cds--text-input::before {
+  left: 0;
+}
+
+html {
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0 !important;
+  overflow-x: scroll;
+  overflow-y: scroll;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+@import url("https://fonts.googleapis.com/css?family=Lexend+Deca:400,600");
+
+/* Variables */
+:root {
+	--black: rgba(0, 0, 0, 1);
+	--eerie-black: rgba(20, 24, 27, 1);
+	--shark: rgba(30, 36, 41, 1);
+	--sea-green: rgba(42, 148, 71, 1);
+	--bright-gray: rgba(54, 64, 73, 1);
+	--masala: rgba(66, 59, 59, 1);
+	--oslo-gray: rgba(138, 144, 151, 1);
+	--silver: rgba(210, 197, 198, 1);
+	--geyser-2: rgba(215, 221, 230, 1);
+	--geyser: rgba(215, 221, 231, 1);
+	--dawn-pink: rgba(241, 232, 232, 1);
+	--white: rgba(255, 255, 255, 1);
+	--font-size-xs: 40px;
+	--font-size-m3: 20px;
+	--font-size-l3: 24px;
+	--font-size-s2: 48px;
+	--font-size-m2: 64px;
+	--font-size-l2: 80px;
+	--font-size-xl2: 110px;
+	--font-family-inter: "Inter";
+	--font-family-lexend_deca: "Lexend Deca";
+	--font-family-lexend_deca-medium: "Lexend Deca-Medium";
+	--font-family-lexend_deca-semibold: "Lexend Deca-SemiBold";
+	--font-family-nats-regular: "NATS-Regular";
+}
+
+/* Variables */
+:root {
+  --lightbackground: $field-01;
+  --lightselected: $field-01;
+  --lightseperation: $border-strong ;
+  --lightcontroltext: $text-secondary ;
+  --darkbackground: $background ;
+  --darkselected: $field-01;
+  --darkcontrol: $field-01;
+  --darkcontroltext: $text-secondary;
+  --darkseperation: $border-strong;
+  --specialcolor: $primary-01;
+  --whitetext: #D7DDE7;
+  
+  --black: rgba(0, 0, 0, 1);
+  --eerie-black: rgba(20, 24, 27, 1);
+  --shark: rgba(30, 36, 41, 1);
+  --bright-gray: rgba(54, 64, 73, 1);
+  --masala: rgba(66, 59, 59, 1);
+  --oslo-gray: rgba(138, 144, 151, 1);
+  --silver: rgba(210, 197, 198, 1);
+  --geyser: rgba(215, 221, 231, 1);
+  --dawn-pink: rgba(241, 232, 232, 1);
+  --white: rgba(255, 255, 255, 1);
+  --font-size-xs: 40px;
+  --font-size-s: 48px;
+  --font-size-m: 20px;
+  --font-size-l: 24px;
+  --font-size-m2: 64px;
+  --font-size-l2: 80px;
+  --font-size-xl2: 110px;
+  --font-size-xs: 40px;
+  --font-size-m3: 20px;
+  --font-size-l3: 24px;
+  --font-size-s2: 48px;
+  --font-size-m2: 64px;
+  --font-size-l2: 80px;
+  --font-size-xl2: 110px;
+  --font-family-lexend_deca: "Lexend Deca";
+  --font-family-lexend_deca-medium: "Lexend Deca-Medium";
+  --font-family-nats-regular: "NATS-Regular";
+}
+#edit-inputs .bx--form-item {
+  width: 100%;
+}
+#edit-inputs .bx--label {
+  font-family: var(--font-family-lexend_deca);
+  font-size: 16px;
+  color: var(--darkcontroltext);
+}
+#edit-inputs .bx--text-input:focus {
+  outline: 2px solid var(--specialcolor);
+  outline-offset: -2px;
+}
+#edit-inputs .bx--text-input {
+  width: 100%;
+  font-family: var(--font-family-lexend_deca);
+  font-size: 18px;
+  color: var(--whitetext);
+  border: 2px solid var(--lightseperation) ;
+  outline: none;
+  border-radius: 6px;
+  background-color: var(--lightbackground);
+}
+
+*::-webkit-scrollbar-track
+{
+  border-radius: 2px;
+  background-color: var(--darkbackground);
+}
+
+*::-webkit-scrollbar
+{
+  width: 4px;
+  background-color: var(--darkbackground);
+}
+
+*::-webkit-scrollbar-thumb
+{
+  border-radius: 2px;
+  background-color: var(--lightseperation);
+}
+/* Hide scrollbar for Chrome, Safari and Opera */
+
+* {
+  color-scheme: dark;
+  scrollbar-width: thin;
+}
+/* Hide scrollbar for IE, Edge and Firefox */
+* {
+  -ms-overflow-style: none;  /* IE and Edge */
+}
+
+
+html, body {
+	position: relative;
+  font-family: 'Lexend Deca', sans-serif;
+  padding: 0 !important;
+  margin: 0 !important;
+	width: 100%;
+	height: 100%;
+}
+
+body {
+	color: var(--darkcontroltext);
+	margin: 0;
+	box-sizing: border-box;
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+}
+
+a {
+	color: rgb(0,100,200);
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:visited {
+	color: rgb(0,80,160);
+}
+
+label {
+	display: block;
+}
+
+input, button, select, textarea {
+	font-family: inherit;
+	font-size: inherit;
+	-webkit-padding: 0.4em 0;
+	padding: 0.4em;
+	margin: 0 0 0.5em 0;
+	box-sizing: border-box;
+	border: 1px solid $border-strong;
+}
+
+input:disabled {
+	color: $border-strong;
+}
+
+button {
+	color: var(--darkcontroltext);
+	background-color: $field-01;
+	outline: none;
+}
+
+button:disabled {
+	color: #999;
+}
+
+button:not(:disabled):active {
+	background-color: #ddd;
+}
+
+button:focus {
+	border-color: #666;
+}

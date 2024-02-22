@@ -1,0 +1,119 @@
+@use '@carbon/react/scss/themes';
+@use '@carbon/react/scss/theme';
+@use '@carbon/react/scss/components/button/tokens' as button-tokens;
+@use '@carbon/themes/scss/utilities';
+@use '@carbon/react/scss/components/button';
+@use '@carbon/react/scss/components/text-input';
+@import'@carbon/react/scss/themes';
+@import'@carbon/react/scss/theme';
+
+
+.summary-title-container{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.pdf-viewer-container {
+  width: 100%;
+  height: 57rem;
+}
+
+.judgment-panel.unmoved {
+  width: 100vw;
+  overflow-y: scroll;
+  height: 100vh;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 31px;
+}
+
+.judgment-panel-container {
+  margin-top: 10rem;
+  border: 1px none;
+  box-sizing: border-box;
+  background-color: $layer-01;
+  transition: transform 0.4s ease-in-out;
+  filter: drop-shadow(0px 0px 10px rgba(0, 0, 0, 0.25));
+  width: 80%;
+  padding: 3rem;
+  box-sizing: border-box;
+}
+
+.judgment-panel-scroll {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: center;
+}
+
+.panel-header {
+  margin-top: 1rem;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.judgment-content {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: center;
+  padding: 2rem;
+  padding-bottom: 0;
+  padding-top: 0;
+  gap: 1rem;
+  * {
+    font-size: 1rem;
+    padding: 0;
+    font-weight: 400;
+    margin: 0;
+    color: $text-secondary;
+  }
+  .judgment-title {
+    color: #fff;
+    font-weight: 800;
+    margin-bottom: 1rem;
+    font-size: 2rem;
+  }
+}
+
+.judgment-summary {
+  width: 100%;
+  font-size: 1rem;
+  padding: 2rem;
+  padding-top: 1rem;
+  text-align: start;
+  hr {
+    color: #fff;
+  }
+  .summary-title {
+    color: #fff;
+  }
+  .summary-title {
+    .judgment-pricing {
+      padding: 0.3rem;
+      border-radius: 2px;
+      margin-left: 1rem;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: $support-success;
+      background-color: $layer-02;
+    }
+    span {
+      font-weight: 400;
+      font-size: 0.8rem;
+      color: $text-secondary;
+    }
+  }
+  .summary {
+    margin-top: 1.5rem;
+    color: $text-secondary;
+    font-weight: 400;
+    font-size: 1rem;
+  }
+}

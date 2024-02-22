@@ -1,0 +1,7 @@
+**/__pycache__/
+**/__pycache__/*.cypthon
+**/__pycache__/*.pyc
+*.pyc
+*.pyo
+**/*.pyc
+.env

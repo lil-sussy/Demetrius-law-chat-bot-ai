@@ -1,0 +1,1 @@
+from law_chatbot.middleware.corsMiddleware import corsMiddleware
