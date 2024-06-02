@@ -214,20 +214,38 @@ USE_TZ = True
 
 import os
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-STATIC_URL = 'static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
+import os
+from pathlib import Path
+
+# Base directory of the project
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Static files (CSS, JavaScript, Images)
+STATIC_URL = '/'
+
+# Add the build/static directory from the React build
 STATICFILES_DIRS = [
-    # os.path.join(BASE_DIR, "static"),
     os.path.join(BASE_DIR, 'static/database/judgment_files'),
-    os.path.join(BASE_DIR, 'demetrius_react/build/static'),
+    os.path.join(BASE_DIR, 'demetrius_react/build/static/'),
 ]
+
 STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 ]
+# Where to collect static files to serve them
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# Ensure you have a correct favicon path
+FAVICON_PATH = os.path.join(BASE_DIR, 'demetrius_react/build/favicon.ico')
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+if DEBUG:
+    import logging
+    logging.basicConfig(level=logging.DEBUG)
+    logging.debug(f"STATICFILES_DIRS: {STATICFILES_DIRS}")
+    logging.debug(f"STATIC_ROOT: {STATIC_ROOT}")
