@@ -221,18 +221,11 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Static files (CSS, JavaScript, Images)
-STATIC_URL = '/'
-
-# Add the build/static directory from the React build
+STATIC_URL = 'static/'
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static/database/judgment_files'),
-    os.path.join(BASE_DIR, 'demetrius_react/build/static/'),
+    BASE_DIR / 'frontend/build/static',
 ]
 
-STATICFILES_FINDERS = [
-    'django.contrib.staticfiles.finders.FileSystemFinder',
-    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-]
 # Where to collect static files to serve them
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
