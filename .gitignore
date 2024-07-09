@@ -5,5 +5,5 @@
 *.pyo
 **/*.pyc
 .env
-
-./database
+database
+database/**
