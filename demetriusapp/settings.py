@@ -37,7 +37,7 @@ SECRET_KEY = config('SECRET_KEY')
 OPENAI_TOKEN = config('OPENAI_TOKEN')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DEBUG', default=False, cast=bool)
+DEBUG = config('DEBUG', default=True, cast=bool)
 
 CORS_ORIGIN_ALLOW_ALL = True
 
@@ -221,9 +221,12 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Static files (CSS, JavaScript, Images)
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, ' frontend/build')
 STATICFILES_DIRS = [
-    BASE_DIR / 'frontend/build/static',
+    os.path.join(BASE_DIR, 'frontend/build'),  # Example: '../my-react-app/build'
+    os.path.join(BASE_DIR, 'frontend/build/static'),
+    BASE_DIR / 'database/judgment_files/',
 ]
 
 # Where to collect static files to serve them

@@ -14,7 +14,7 @@ import AccountsFrame from "./components/accountspage/AccountsFrame";
 import type { Chat, Judgment } from './requests/request';
 
 const App: React.FC = () => {
-	const [isloggedin, setLoggedin] = useState<boolean>(false);
+	const [isloggedin, setLoggedin] = useState<boolean>(true);
 	const [sideCollapsed, setSideCollapsed] = useState<boolean>(false);
   const [confirmationText, setConfirmationText] = useState<string>("");
   const [mode, setMode] = useState<"chats" | "judgments" | "laws" | "accounts">("chats");
