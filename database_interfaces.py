@@ -29,6 +29,11 @@ class ChromaDBInterface:
                 metadatas=[{"document": document_name, "article_number": article_number}],
                 ids=[f"{document_name}_{article_number}_kw{i}"]
             )
+            
+    def clear(self):
+        # Clear the ChromaDB client
+        for collection in self.client.list_collections():
+            self.client.delete_collection(collection.name)
 
     def close(self):
         # Persist the data to ensure it is saved
@@ -36,20 +41,38 @@ class ChromaDBInterface:
 
 
 from graphdatascience import GraphDataScience
+from neo4j import GraphDatabase
+from datetime import datetime
 
-class Neo4jInterface:
+class FrenchLawDatabase:
     def __init__(self, uri, user, password):
-        # Initialize the GraphDataScience client with the Neo4j connection details
-        self.gds = GraphDataScience(uri, auth=(user, password))
-
-    def store_article(self, document_name, article_number, content):
-        # Store the article in the Neo4j database
-        self.gds.run_cypher("""
-            MERGE (d:Document {name: $document_name})
-            CREATE (a:Article {number: $article_number, content: $content})
-            CREATE (d)-[:CONTAINS]->(a)
-        """, params={"document_name": document_name, "article_number": article_number, "content": content})
+        self.driver = GraphDataScience(uri, auth=(user, password))
+        print(self.driver.version())
 
     def close(self):
-        # Close the GraphDataScience client connection
-        self.gds.close()
+        self.driver.close()
+
+    def insert_article(self, law_number, date, title, code_name, article_number, text):
+        query = """
+        MERGE (law:Law {law_number: $law_number})
+        ON CREATE SET law.date = $date, law.title = $title
+        MERGE (code:Code {code_name: $code_name})
+        MERGE (law)-[:LAW_TO_CODE]->(code)
+        MERGE (article:Article {article_number: $article_number, code_name: $code_name})
+        ON CREATE SET article.text = $text, article.law_number = $law_number
+        MERGE (law)-[:LAW_CONTAINS]->(article)
+        MERGE (code)-[:CODE_CONTAINS]->(article)
+        """
+        parameters = {
+            "law_number": law_number,
+            "date": date,
+            "title": title,
+            "code_name": code_name,
+            "article_number": article_number,
+            "text": text
+        }
+        
+        self.driver.run_cypher(query, parameters)
+        print(f"Article {article_number} of {code_name} inserted successfully.")
+
+

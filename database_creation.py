@@ -24,27 +24,25 @@ logger = logging.getLogger(__name__)
 
 def process_article(article, document_name, chroma_db, neo4j_db):
     """Process a single article."""
-    try:
-        # Generate embeddings
-        article_embedding = generate_embeddings(article['content'])
-        
-        # Extract keywords
-        num_keywords = max(int(len(article['content']) * 0.05), 1)
-        keywords = extract_keywords_from_article(article['content'], num_keywords)
-        
-        # Store in ChromaDB
-        chroma_db.store_article(document_name, article['number'], article['content'], article_embedding)
-        chroma_db.store_keywords(document_name, article['number'], keywords)
-        
-        # Store in Neo4j
-        neo4j_db.store_article(document_name, article['number'], article['content'])
-        
-        logger.info(f"Processed Article {article['number']} from {document_name}")
-    except Exception as e:
-        logger.error(f"Error processing Article {article['number']} from {document_name}: {str(e)}")
+    # Generate embeddings
+    article_embedding = generate_embeddings(article['content'])
+    
+    # Extract keywords
+    num_keywords = max(int(len(article['content']) * 0.05), 1)
+    keywords = extract_keywords_from_article(article['content'], num_keywords)
+    
+    # Store in ChromaDB
+    chroma_db.store_article(document_name, article['number'], article['content'], article_embedding)
+    
+    # Store in Neo4j
+    neo4j_db.store_article(document_name, article['number'], article['content'])
+    
+    logger.info(f"Processed Article {article['number']} from {document_name}")
+    return keywords
 
 def main():
     chroma_db = ChromaDBInterface(os.environ.get('CHROMA_DB_PATH'))
+    chroma_db.clear()
     # neo4j_db = Neo4jInterface(os.environ.get('NEO4J_URI'), os.environ.get('NEO4J_USER'), os.environ.get('NEO4J_PASSWORD'))
     
     # Process each PDF in the input directory
@@ -56,14 +54,14 @@ def main():
             
             logger.info(f"Processing {filename}")
             
-            try:
-                articles = extract_articles_from_pdf(pdf_path)
-                for article in articles:
-                    process_article(article, document_name, chroma_db, neo4j_db)
-                
-                logger.info(f"Completed processing {filename}")
-            except Exception as e:
-                logger.error(f"Error processing {filename}: {str(e)}")
+            articles = extract_articles_from_pdf(pdf_path)
+            keywords = set()
+            for article in articles:
+                new_keywords = process_article(article, document_name, chroma_db, neo4j_db)
+                keywords.update(new_keywords)
+                print()
+            chroma_db.store_keywords(document_name, article['number'], list(keywords))        
+            logger.info(f"Completed processing {filename}")
     
     # Close database connections
     chroma_db.close()

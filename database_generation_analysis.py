@@ -32,21 +32,13 @@ def process_document(pdf_path, output_dir):
     """Process a single PDF document."""
     document_name = os.path.splitext(os.path.basename(pdf_path))[0]
     
-    try:
-        articles = extract_articles_from_pdf(pdf_path)
-        
-        # Extract keywords for each article
-        for article in articles:
-            num_keywords = max(int(len(article['content']) * 0.05), 1)
-            keywords = extract_keywords_from_article(article['content'], num_keywords)
-            article['keywords'] = keywords
-        
-        # Generate markdown file
-        generate_markdown(articles, document_name, output_dir)
-        
-        logger.info(f"Processed {document_name}")
-    except Exception as e:
-        logger.error(f"Error processing {document_name}: {str(e)}")
+    articles = extract_articles_from_pdf(pdf_path)
+    
+    
+    # Generate markdown file
+    generate_markdown(articles, document_name, output_dir)
+    
+    logger.info(f"Processed {document_name}")
 
 def main():
     # Load configuration
@@ -57,7 +49,9 @@ def main():
     
     # Process each PDF in the input directory
     input_dir = "./database/laws/"
-    for filename in os.listdir(input_dir):
+    for i, filename in enumerate(os.listdir(input_dir)):
+        if i <= 1:
+            continue
         if filename.endswith('.pdf'):
             pdf_path = os.path.join(input_dir, filename)
             process_document(pdf_path, output_dir)

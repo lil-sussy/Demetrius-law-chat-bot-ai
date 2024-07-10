@@ -7,6 +7,7 @@ from tqdm import tqdm
 
 
 nlp = spacy.load('fr_core_news_sm')
+nlp.max_length = 3*10**6
 
 def extract_articles_from_pdf(pdf_path):
     articles = []
@@ -14,7 +15,7 @@ def extract_articles_from_pdf(pdf_path):
         reader = PyPDF2.PdfReader(file)
         text = ''
         for page in reader.pages:
-            text += page.extract_text()
+            text += " ".join(page.extract_text().split('\n')[:-1])
     
     # Split the text into articles
     article_pattern = re.compile(r'Article ((?:L?\d+(?:-\d+)?)|(?:\d+))([\s\S]*?)(?=Article (?:L?\d+(?:-\d+)?|\d+)|$)')
@@ -26,7 +27,7 @@ def extract_articles_from_pdf(pdf_path):
         sub_articles = nlp(content.replace("\n", " ").replace("-", "")).sents
         for sub_article in sub_articles:
             if sub_article.text == 'Article' or len(sub_article.text) == 0:
-                pass
+                continue
             articles.append({
                 'article': article_ID,
                 'content': sub_article.text
