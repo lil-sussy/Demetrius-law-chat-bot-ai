@@ -7,7 +7,7 @@
 
     {
       "name": "Run Django server",
-      "type": "python",
+      "type": "debugpy",
       "request": "launch",
       "program": "${workspaceFolder}/manage.py",
       "args": [
@@ -18,7 +18,7 @@
     },
     {
       "name": "law import command",
-      "type": "python",
+      "type": "debugpy",
       "request": "launch",
       "program": "${workspaceFolder}/manage.py",
       "args": [
@@ -30,7 +30,7 @@
     },
     {
       "name": "ask xd command",
-      "type": "python",
+      "type": "debugpy",
       "request": "launch",
       "program": "${workspaceFolder}/manage.py",
       "args": [
@@ -42,7 +42,7 @@
     },
     {
       "name": "ask demetrius command",
-      "type": "python",
+      "type": "debugpy",
       "request": "launch",
       "program": "${workspaceFolder}/manage.py",
       "args": [
@@ -51,6 +51,14 @@
       ],
       "django": true,
       "justMyCode": true
-    }
+    },
+    {
+      "name": "Create database.py",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${file}",
+      "django": true,
+      "justMyCode": true
+    },
   ]
 }
