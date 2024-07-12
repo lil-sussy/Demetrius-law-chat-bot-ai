@@ -63,17 +63,17 @@ BASE_URLS = {
     "Code général des impôts": "https://www.legifrance.gouv.fr/codes/texte_lc/LEGITEXT000006069577/",
     "Code général de la fonction publique": "https://www.legifrance.gouv.fr/codes/texte_lc/LEGITEXT000044416551"
 }
-
 import requests
 from bs4 import BeautifulSoup
 import re
 import json
 from typing import Dict, Any, List, TypedDict
-from urllib.parse import urljoin
+from urllib.parse import urljoin, urlparse, parse_qs
 import logging
 import os
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from article_version_retriver import extract_article_version
+from article_version_retriver import parse_html_to_article_versions_info
+from curl_cffi import requests as curl_requests
 
 MAIN_CONTAINER_CLASS = "code-consommation-list summary-list summary-list-headers-tag js-list-expanded folding-element with-border"
 OUTPUT_DIR = "legal_codes_output"
@@ -90,6 +90,7 @@ class ArticleInfo(TypedDict):
     path: str
     link: str
     is_abrogated: bool
+    revision_info: Dict[str, Any]
 
 ResultDict = Dict[str, ArticleInfo]
 
@@ -114,14 +115,83 @@ def normalize_url(base_url: str, relative_url: str) -> str:
 def is_article_abrogated(article_text: str) -> bool:
     return bool(re.search(r'\(abrogé\)', article_text, re.IGNORECASE))
 
+def parse_article_url(url: str) -> Dict[str, str]:
+    parsed_url = urlparse(url)
+    path_parts = parsed_url.path.split('/')
+    query_params = parse_qs(parsed_url.query)
+    fragment = parsed_url.fragment
+
+    return {
+        'textCid': path_parts[3] if len(path_parts) > 3 else '',
+        'articleID': query_params.get('anchor', [fragment])[0]
+    }
+
+def construct_request(url_components: Dict[str, str]) -> Dict[str, Any]:
+    base_url = "https://www.legifrance.gouv.fr"
+    endpoint = "/articleRevision"
+    query_params = {
+        'articleCid': url_components['articleID'],
+        'articleId': url_components['articleID'],
+        'texteCid': url_components['textCid'],
+        'num': 'L111-1',  # This might need to be dynamic
+        'dateConsult': '2024-07-12',  # This should be updated to current date
+        'idComplement': '-1',
+        'abrogated': 'false',
+        'isInContext': 'true',
+        'loadAll': 'true'
+    }
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:128.0) Gecko/20100101 Firefox/128.0',
+        'Accept': 'text/html, application/xhtml+xml',
+        'Accept-Language': 'en-US,en;q=0.5',
+        'Accept-Encoding': 'gzip, deflate, br, zstd',
+        'Content-Type': 'text/html, application/xhtml+xml',
+        'X-CSRF-TOKEN': 'd6e0c230-80ed-4ac4-bada-18963109a23c',  # This should be dynamically generated
+        'X-Requested-With': 'XMLHttpRequest',
+        'Referer': f"https://www.legifrance.gouv.fr/codes/section_lc/{url_components['textCid']}/LEGISCTA000006157551/?anchor={url_components['articleID']}"
+    }
+    
+    return {
+        'url': f"{base_url}{endpoint}",
+        'params': query_params,
+        'headers': headers
+    }
+
+def fetch_revision_info(request_data: Dict[str, Any]) -> Dict[str, Any]:
+    try:
+        response = curl_requests.get(
+            request_data['url'],
+            params=request_data['params'],
+            headers=request_data['headers']
+        )
+        response.raise_for_status()
+        versions = parse_html_to_article_versions_info(response.text)
+        return versions
+    except Exception as e:
+        logging.error(f"Error fetching revision info: {str(e)}")
+        return {}
+
+def parse_revision_response(html_content: str) -> Dict[str, Any]:
+    soup = BeautifulSoup(html_content, 'html.parser')
+    # This is a placeholder. You'll need to implement the actual parsing logic
+    # based on the structure of the revision info in the HTML
+    return {
+        'version': soup.find('div', class_='version').text.strip() if soup.find('div', class_='version') else '',
+        'last_modified': soup.find('div', class_='last-modified').text.strip() if soup.find('div', class_='last-modified') else ''
+    }
+
 def extract_article_info(article_link: Any, current_path: str, base_url: str, article_text: str) -> ArticleInfo:
     article_number = article_link.get('data-na', '')
     article_url = normalize_url(base_url, article_link['href'])
-    article_version = extract_article_version(article_url)
+    url_components = parse_article_url(article_url)
+    request_data = construct_request(url_components)
+    revision_info = fetch_revision_info(request_data)
+    
     return {
         "path": current_path,
         "link": article_url,
-        "is_abrogated": is_article_abrogated(article_text)
+        "is_abrogated": is_article_abrogated(article_text),
+        "revision_info": revision_info
     }
 
 def clean_title(title: str) -> str:

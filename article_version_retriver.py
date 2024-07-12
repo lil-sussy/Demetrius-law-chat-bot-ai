@@ -1,220 +1,196 @@
 import re
-import requests
+from dataclasses import dataclass, asdict, field
+from typing import List, Optional, Tuple
+from datetime import datetime
 from bs4 import BeautifulSoup
+import json
 import logging
-from urllib.parse import urlparse, parse_qs
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import TimeoutException, NoSuchElementException, StaleElementReferenceException
-from selenium.webdriver.common.action_chains import ActionChains
-import time
-from selenium.webdriver.remote.webelement import WebElement
-
-# Set up logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-# Configuration
-WAIT_TIME = 10  # seconds
-RETRY_ATTEMPTS = 3
-MAX_EXPANSION_RETRIES = 3
-EXPANSION_WAIT_TIME = 5  # seconds
+FRENCH_MONTHS = {
+    'janvier': 1, 'février': 2, 'mars': 3, 'avril': 4, 'mai': 5, 'juin': 6,
+    'juillet': 7, 'août': 8, 'septembre': 9, 'octobre': 10, 'novembre': 11, 'décembre': 12
+}
 
-class AccordionExpansionError(Exception):
-    """Custom exception for accordion expansion errors."""
-    pass
+class Config:
+    def __init__(self):
+        self.date_format = "%d %B %Y"
+        self.text_cleaning_rules = [
+            (r'\s+', ' '),  # Replace multiple spaces with a single space
+            (r'^\s+|\s+$', '')  # Remove leading and trailing spaces
+        ]
+        self.extraction_patterns = {
+            'article_id': r'Article (.*) du code (.*)',
+            'date_range': r'\d{2} \w+ \d{4}'
+        }
+        self.french_months = {
+            'janvier': 'January',
+            'février': 'February',
+            'mars': 'March',
+            'avril': 'April',
+            'mai': 'May',
+            'juin': 'June',
+            'juillet': 'July',
+            'août': 'August',
+            'septembre': 'September',
+            'octobre': 'October',
+            'novembre': 'November',
+            'décembre': 'December'
+        }
 
-def error_handler(func):
-    def wrapper(*args, **kwargs):
-        try:
-            return func(*args, **kwargs)
-        except Exception as e:
-            logging.error(f"Error in {func.__name__}: {str(e)}")
-            return None
-    return wrapper
+    def load_from_file(self, config_file):
+        # Implementation for loading configuration from a file
+        pass
 
-@error_handler
-def initialize_webdriver():
-    options = webdriver.ChromeOptions()
-    options.add_argument('--headless')
-    driver = webdriver.Chrome(options=options)
-    driver.implicitly_wait(5)
-    return driver
+@dataclass
+class LegalReference:
+    type: str
+    number: str
+    date: Optional[datetime] = None
+    article: Optional[str] = None
 
-@error_handler
-def navigate_to_url(driver, url):
-    driver.get(url)
-    return driver
-
-@error_handler
-def click_versions_button(driver):
-    wait = WebDriverWait(driver, WAIT_TIME)
-    buttons = wait.until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, 'button.js-tab-secondary.tabs__link.ajax-load-tab-revision.tab-first-order')))
-    for button in buttons:
-        if button.text.strip() == "Versions":
-            wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, 'button.js-tab-secondary.tabs__link.ajax-load-tab-revision.tab-first-order')))
-            safe_click(driver, button)
-            return True
-    raise NoSuchElementException("Versions button not found")
-
-@error_handler
-def extract_data_anchor(url):
-    parsed_url = urlparse(url)
-    fragment = parsed_url.fragment
-    return fragment if fragment else None
-
-@error_handler
-def find_target_element(driver, data_anchor):
-    return driver.find_element(By.CSS_SELECTOR, f'p[data-anchor="{data_anchor}"]')
-
-def is_button_expanded(button: WebElement) -> bool:
-    """Check if the accordion button is already expanded."""
-    return 'is-opened' in button.get_attribute('class') or button.get_attribute('aria-expanded') == 'true'
-
-def safe_click(driver: webdriver.Chrome, element: WebElement) -> None:
-    """Safely click an element, handling potential exceptions."""
-    try:
-        # Scroll element into view
-        driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", element)
-        element.click()
-    except Exception as e:
-        logging.warning(f"Initial click failed: {str(e.msg)}. Trying alternative methods.")
-        
-        try:
-            # Try clicking with JavaScript
-            driver.execute_script("arguments[0].click();", element)
-        except Exception:
-            try:
-                # Try clicking by coordinates
-                actions = ActionChains(driver)
-                actions.move_to_element(element).click().perform()
-            except Exception:
-                # As a last resort, hide overlay and click
-                overlay = driver.find_element(By.ID, "stickyScrollTitre")
-                driver.execute_script("arguments[0].style.display='none';", overlay)
-                try:
-                    element.click()
-                finally:
-                    driver.execute_script("arguments[0].style.display='';", overlay)
-
-    # Wait for any animations or page updates to complete
-    time.sleep(1)
-
-def wait_for_expansion(driver: webdriver.Chrome, accordion_item: WebElement) -> None:
-    """Wait for the accordion item to finish expanding."""
-    try:
-        WebDriverWait(driver, EXPANSION_WAIT_TIME).until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, '.accordion-timeline-item-content'))
+    @classmethod
+    def from_string(cls, reference_string: str) -> 'LegalReference':
+        # Implementation of parsing logic for legal references
+        # This is a simplified version and may need to be expanded
+        parts = reference_string.split()
+        return cls(
+            type=parts[0],
+            number=parts[1] if len(parts) > 1 else "",
+            date=parse_date(parts[2]) if len(parts) > 2 else None,
+            article=parts[3] if len(parts) > 3 else None
         )
-    except TimeoutException:
-        logging.error("Timeout waiting for accordion expansion")
-        raise
 
-def relocate_element(driver: webdriver.Chrome, by: str, value: str) -> WebElement:
-    """Re-locate an element that may have become stale."""
-    for _ in range(RETRY_ATTEMPTS):
-        try:
-            return driver.find_element(by, value)
-        except StaleElementReferenceException:
-            logging.warning("Stale element, retrying...")
-    raise NoSuchElementException(f"Element not found after {RETRY_ATTEMPTS} attempts")
+@dataclass
+class Version:
+    status: str
+    effective_period: Tuple[datetime, Optional[datetime]]
+    created_by: Optional[LegalReference] = None
+    abrogated_by: Optional[LegalReference] = None
+    source: Optional[str] = None
 
-@error_handler
-def expand_accordion_item(driver: webdriver.Chrome, accordion_item: WebElement) -> None:
-    """Expand an accordion item if it's not already expanded."""
+@dataclass
+class Article:
+    id: str
+    code_name: str
+    versions: List[Version] = field(default_factory=list)
+    codification: Optional[LegalReference] = None
+    replacement: Optional[dict] = None
+
+class ArticleExtractor:
+    def __init__(self, config: Config):
+        self.config = config
+
+    def extract_article_info(self, html_content: str) -> Article:
+        soup = BeautifulSoup(html_content, 'html.parser')
+        header = soup.find('div', class_='action')
+        article_id, code_name = self.extract_article_header(header)
+        
+        article = Article(id=article_id, code_name=code_name)
+        
+        timeline = soup.find('div', class_='accordion-timeline')
+        article.versions = self.extract_versions(timeline)
+        
+        codification_element = soup.find('li', id='codification')
+        if codification_element:
+            article.codification = self.extract_codification(codification_element)
+        
+        replacement_element = soup.find('h5', string=re.compile("Nouveau\(x\) texte\(s\)"))
+        if replacement_element:
+            article.replacement = self.extract_replacement(replacement_element.find_next('li'))
+        
+        return article
+
+    def extract_article_header(self, header_element) -> Tuple[str, str]:
+        title = header_element.find('h5', class_='title-section').text.strip()
+        match = re.match(r'Article (.*) du code (.*)', title)
+        return match.group(1), match.group(2)
+
+    def extract_versions(self, timeline_element) -> List[Version]:
+        versions = []
+        for item in timeline_element.find_all('div', class_='accordion-timeline-item'):
+            versions.extend(self.extract_version_info(item))
+        return versions
+
+    def extract_version_info(self, version_element) -> List[Version]:
+        versions = []
+        year = version_element.find('button').text.strip().split()[0]
+        for li in version_element.find_all('li'):
+            status = 'current' if 'current-version' in li.get('class', []) else 'previous'
+            version_text = li.find('h6').text if li.find('h6') else ''
+            effective_period = self.extract_date_range(version_text)
+            
+            if effective_period[0] is None:
+                logging.warning(f"Unable to parse effective date for version: {version_text}")
+                continue
+            
+            version = Version(status=status, effective_period=effective_period)
+            
+            creation_info = li.find('span', string=re.compile("Créé par"))
+            if creation_info:
+                version.created_by = LegalReference.from_string(creation_info.find_next('span').text)
+            
+            abrogation_info = li.find('span', string=re.compile("Abrogé par"))
+            if abrogation_info:
+                version.abrogated_by = LegalReference.from_string(abrogation_info.find_next('span').text)
+            
+            versions.append(version)
+        
+        return versions
+
+    def extract_date_range(self, text: str) -> Tuple[datetime, Optional[datetime]]:
+        date_matches = re.findall(r'\d{2} \w+ \d{4}', text)
+        start_date = parse_date(date_matches[0])
+        end_date = parse_date(date_matches[1]) if len(date_matches) > 1 else None
+        return start_date, end_date
+
+    def extract_codification(self, codification_element) -> LegalReference:
+        codification_text = codification_element.find('div', class_='edit').text.strip()
+        return LegalReference.from_string(codification_text.replace('Codifié par', '').strip())
+
+    def extract_replacement(self, replacement_element) -> dict:
+        replacement_text = replacement_element.find('h6').text.strip()
+        parts = replacement_text.split(' - ')
+        return {
+            'code': parts[0],
+            'article': parts[1].split()[1],
+            'effective_date': parse_date(replacement_element.find('p').text.strip())
+        }
+
+def parse_date(date_string: str) -> Optional[datetime]:
     try:
-        button = accordion_item.find_element(By.CSS_SELECTOR, '.expandmore__button.js-expandmore-button')
-        if not is_button_expanded(button):
-            wait = WebDriverWait(driver, WAIT_TIME)
-            wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, '.expandmore__button.js-expandmore-button')))
-            safe_click(driver, button)
-            time.sleep(1)
-            # wait_for_expansion(driver, accordion_item)
-    except Exception as e:
-        logging.error(f"Error expanding accordion item: {str(e)}")
-        raise AccordionExpansionError("Failed to expand accordion item")
-
-@error_handler
-def process_accordion_items(driver: webdriver.Chrome, timeline: WebElement) -> list:
-    """Process all accordion items in the timeline."""
-    items_data = []
-    accordion_items = timeline.find_elements(By.CLASS_NAME, 'accordion-timeline-item')
-    for item in accordion_items:
-        try:
-            expand_accordion_item(driver, item)
-            item_data = process_timeline_item(item)
-            if item_data:
-                items_data.append(item_data)
-        except AccordionExpansionError:
-            logging.warning(f"Skipping accordion item due to expansion error")
-        except Exception as e:
-            logging.error(f"Error processing accordion item: {str(e)}")
-    return items_data
-
-@error_handler
-def process_timeline_item(item: WebElement) -> dict:
-    """Process a single timeline item after it has been expanded."""
-    try:
-        year = item.find_element(By.TAG_NAME, 'h6').text.strip()
-        li = item.find_element(By.TAG_NAME, 'ul').find_element(By.TAG_NAME, 'li')
-        date = li.find_element(By.TAG_NAME, 'h6').text.strip()
-        p = li.find_element(By.TAG_NAME, 'p')
-        try:
-            law = p.find_element(By.TAG_NAME, 'a').text.strip()
-        except NoSuchElementException:
-            law = p.text.strip()
-        return {'year': year, 'date': date, 'law': law}
-    except NoSuchElementException as e:
-        logging.error(f"Error processing timeline item: Might be an expected error. {str(e.msg)}")
+        # Try to match the date pattern
+        match = re.search(r'(\d{1,2})\s*(\w+)\s*(\d{4})', date_string)
+        if match:
+            day, month, year = match.groups()
+            month_num = FRENCH_MONTHS.get(month.lower())
+            if month_num:
+                return datetime(int(year), month_num, int(day))
+        
+        # If the above fails, try a more flexible approach
+        numbers = re.findall(r'\d+', date_string)
+        if len(numbers) == 3:
+            day, month, year = map(int, numbers)
+            return datetime(year, month, day)
+        elif len(numbers) == 1 and len(numbers[0]) == 8:  # Format: YYYYMMDD
+            year, month, day = int(numbers[0][:4]), int(numbers[0][4:6]), int(numbers[0][6:])
+            return datetime(year, month, day)
+        
+        logging.warning(f"Unable to parse date string: {date_string}")
+        return None
+    except ValueError as e:
+        logging.error(f"Error parsing date '{date_string}': {str(e)}")
         return None
 
-@error_handler
-def structure_data(items_data):
-    result = {}
-    for item in items_data:
-        year = item['year']
-        if year not in result:
-            result[year] = {}
-        result[year][item['date']] = {'date': item['date'], 'law': item['law']}
-    return result
+def clean_text(text: str) -> str:
+    return ' '.join(text.split())
 
-def clean_text(text):
-    return re.sub(r'\s+', ' ', text).strip()
+def to_json(article: Article) -> str:
+    return json.dumps(asdict(article), default=str, ensure_ascii=False, indent=2)
 
-@error_handler
-def extract_article_version(url):
-    driver = initialize_webdriver()
-    if not driver:
-        return None
-
-    try:
-        navigate_to_url(driver, url)
-        
-        data_anchor = extract_data_anchor(url)
-        if not data_anchor:
-            logging.error("Data anchor not found in URL")
-            return None
-
-        article_name = find_target_element(driver, data_anchor)
-        if not article_name:
-            logging.error("Article ID not found on page")
-            return None
-        
-        target_element = article_name.find_element(By.XPATH, './parent::*/parent::*')
-        
-        click_versions_button(driver)
-        
-        wait = WebDriverWait(driver, WAIT_TIME)
-        timeline = wait.until(EC.presence_of_element_located((By.CLASS_NAME, 'accordion-timeline')))
-        if not timeline:
-            logging.error("Accordion timeline not found")
-            return None
-
-        items_data = process_accordion_items(driver, timeline)
-        
-        return structure_data(items_data)
-    finally:
-        driver.quit()
-
-# The rest of the code remains unchanged
+config = Config()
+def parse_html_to_article_versions_info(html):
+    extractor = ArticleExtractor(config)
+    
+    article = extractor.extract_article_info(html)
+    return article
