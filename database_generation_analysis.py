@@ -50,7 +50,7 @@ def main():
     # Process each PDF in the input directory
     input_dir = "./database/laws/"
     for i, filename in enumerate(os.listdir(input_dir)):
-        if i <= 1:
+        if i > 1:
             continue
         if filename.endswith('.pdf'):
             pdf_path = os.path.join(input_dir, filename)

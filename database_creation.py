@@ -13,7 +13,6 @@ import os
 import logging
 from law_pdf_parser import extract_articles_from_pdf
 from database_interfaces import ChromaDBInterface
-from database_interfaces import Neo4jInterface
 from tqdm import tqdm
 from dotenv import load_dotenv 
 load_dotenv() 
@@ -22,7 +21,7 @@ load_dotenv()
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
-def process_article(article, document_name, chroma_db, neo4j_db):
+def process_article(article, document_name, chroma_db):
     """Process a single article."""
     # Generate embeddings
     article_embedding = generate_embeddings(article['content'])
@@ -33,9 +32,6 @@ def process_article(article, document_name, chroma_db, neo4j_db):
     
     # Store in ChromaDB
     chroma_db.store_article(document_name, article['number'], article['content'], article_embedding)
-    
-    # Store in Neo4j
-    neo4j_db.store_article(document_name, article['number'], article['content'])
     
     logger.info(f"Processed Article {article['number']} from {document_name}")
     return keywords
@@ -57,7 +53,7 @@ def main():
             articles = extract_articles_from_pdf(pdf_path)
             keywords = set()
             for article in articles:
-                new_keywords = process_article(article, document_name, chroma_db, neo4j_db)
+                new_keywords = process_article(article, document_name, chroma_db)
                 keywords.update(new_keywords)
                 print()
             chroma_db.store_keywords(document_name, article['number'], list(keywords))        
